@@ -23,8 +23,8 @@ urlpatterns = [
     path('api/course/', include('apps.course.urls')),
     path('api/mentor/', include('apps.mentor.urls')),
     path('api/student/', include('apps.students.urls')),
-    path('api/student/', include('apps.administrator.urls')),
-    path('api/student/', include('apps.classquantity.urls')),
+    path('api/administrator/', include('apps.administrator.urls')),
+    path('api/classquantity/', include('apps.classquantity.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)

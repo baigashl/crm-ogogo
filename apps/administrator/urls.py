@@ -1,12 +1,16 @@
-from django.urls import path
-from .views import AdministratorListAPIView, AdministratorCreateAPIView, AdministratorDeleteAPIView, AdministratorDetailAPIView, AdministratorUpdateAPIView
-from rest_framework.urlpatterns import format_suffix_patterns
+
+from django.urls import path, include
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
+from .views import (
+    MyObtainPairView,
+    RegisterView
+)
 
 urlpatterns = [
-    path('', AdministratorListAPIView.as_view(), name='list'),
-    path('create/', AdministratorCreateAPIView.as_view(), name='create'),
-    path('<int:id>/', AdministratorDetailAPIView.as_view(), name='detail'),
-    path('<int:id>/update', AdministratorUpdateAPIView.as_view(), name='update'),
-    path('<int:id>/delete/', AdministratorDeleteAPIView.as_view(), name='delete'),
+
+    path('login/', MyObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('register/', RegisterView.as_view(), name='register'),
 ]
-urlpatterns = format_suffix_patterns(urlpatterns)
