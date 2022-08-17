@@ -5,12 +5,14 @@ from rest_framework_simplejwt.views import (
 )
 from .views import (
     MyObtainPairView,
-    RegisterView
+    CreateSubAdminView,
+    SubAdminListAPIView
 )
 
 urlpatterns = [
-
     path('login/', MyObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('register/', RegisterView.as_view(), name='register'),
+    path('create_subadmin/', CreateSubAdminView.as_view(), name='register'),
+    path('list_subadmin/', SubAdminListAPIView.as_view(), name='list'),
 ]
+

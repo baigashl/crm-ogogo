@@ -11,13 +11,12 @@ from django.http import Http404
 from apps.students.models import Student
 
 
-
 class CourseListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
 
     def get(self, request, format=None):
-        snippets = Course.objects.all()
+        snippets = Course.objects.filter(active=True)
         serializer = CourseSerializer(snippets, many=True)
         return Response(serializer.data)
 
@@ -32,7 +31,6 @@ class CourseListAPIView(APIView):
 class CourseCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
-
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
@@ -75,6 +73,12 @@ class CourseUpdateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
+    def get_object(self, id):
+        try:
+            return Course.objects.get(id=id)
+        except Course.DoesNotExist:
+            raise Http404
+
     def put(self, request, pk, format=None):
         snippet = self.get_object(pk)
         serializer = CourseSerializer(snippet, data=request.data)
@@ -84,9 +88,41 @@ class CourseUpdateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CourseDeleteAPIView(APIView):
+class CourseMoveToAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
+
+    def get_object(self, id):
+        try:
+            return Course.objects.get(id=id)
+        except Course.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id):
+        snippet = Course.objects.get(id=id)
+        snippet.active = False
+        snippet.save()
+        print(snippet.active)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ArchiveCourseListAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    # authentication_classes = []
+
+    def get(self, request):
+        snippets = Course.objects.filter(active=False)
+        serializer = CourseSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+class CourseDeleteAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get_object(self, id):
+        try:
+            return Course.objects.get(id=id)
+        except Course.DoesNotExist:
+            raise Http404
 
     def delete(self, request, pk, format=None):
         snippet = self.get_object(pk)

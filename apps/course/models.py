@@ -10,6 +10,9 @@ class Course(models.Model):
     description = models.CharField(max_length=255)
     address = models.CharField(max_length=255, null=True)
     start_date = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
+    active = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+
