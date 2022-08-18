@@ -73,6 +73,11 @@ class MentorUpdateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
+    def get_object(self, id):
+        try:
+            return Mentor.objects.get(id=id)
+        except Mentor.DoesNotExist:
+            raise Http404
     def put(self, request, pk, format=None):
         snippet = self.get_object(pk)
         serializer = MentorSerializer(snippet, data=request.data)
