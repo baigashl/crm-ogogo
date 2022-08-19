@@ -75,8 +75,14 @@ class ClassQuantityUpdateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def get_object(self, id):
+        try:
+            return ClassQuantity.objects.get(id=id)
+        except ClassQuantity.DoesNotExist:
+            raise Http404
+
+    def put(self, request, id, format=None):
+        snippet = self.get_object(id)
         serializer = ClassQuantitySerializer(snippet, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -88,7 +94,13 @@ class ClassQuantityDeleteAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
-    def delete(self, request, pk, format=None):
+    def get_object(self, id):
+        try:
+            return ClassQuantity.objects.get(id=id)
+        except ClassQuantity.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id, format=None):
         snippet = self.get_object(pk)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

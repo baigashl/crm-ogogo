@@ -31,6 +31,7 @@ class CourseListAPIView(APIView):
 class CourseCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
+
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
@@ -79,8 +80,8 @@ class CourseUpdateAPIView(APIView):
         except Course.DoesNotExist:
             raise Http404
 
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def put(self, request, id, format=None):
+        snippet = self.get_object(id)
         serializer = CourseSerializer(snippet, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -115,6 +116,7 @@ class ArchiveCourseListAPIView(APIView):
         serializer = CourseSerializer(snippets, many=True)
         return Response(serializer.data)
 
+
 class CourseDeleteAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -124,7 +126,7 @@ class CourseDeleteAPIView(APIView):
         except Course.DoesNotExist:
             raise Http404
 
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def delete(self, request, id, format=None):
+        snippet = self.get_object(id)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

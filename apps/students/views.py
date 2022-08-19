@@ -73,8 +73,14 @@ class StudentUpdateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def get_object(self, id):
+        try:
+            return Student.objects.get(id=id)
+        except Student.DoesNotExist:
+            raise Http404
+
+    def put(self, request, id, format=None):
+        snippet = self.get_object(id)
         serializer = StudentSerializer(snippet, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -86,8 +92,14 @@ class StudentDeleteAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def get_object(self, id):
+        try:
+            return Student.objects.get(id=id)
+        except Student.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id, format=None):
+        snippet = self.get_object(id)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
