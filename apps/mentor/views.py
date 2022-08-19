@@ -14,10 +14,18 @@ class MentorListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
 
+    def get_object(self, id):
+        try:
+            return Mentor.objects.get(id=id)
+        except Mentor.DoesNotExist:
+            raise Http404
+
     def get(self, request, format=None):
         snippets = Mentor.objects.all()
         serializer = MentorSerializer(snippets, many=True)
         return Response(serializer.data)
+
+
 
     def post(self, request, format=None):
         serializer = MentorSerializer(data=request.data)
@@ -55,7 +63,7 @@ class MentorDetailAPIView(APIView):
         data = serializer.data
         return Response(data)
 
-    def put(self, request, id, format=None):
+    def put(self, request, id):
         snippet = self.get_object(id)
         serializer = MentorSerializer(snippet, data=request.data)
         if serializer.is_valid():
@@ -78,8 +86,9 @@ class MentorUpdateAPIView(APIView):
             return Mentor.objects.get(id=id)
         except Mentor.DoesNotExist:
             raise Http404
-    def put(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+
+    def put(self, request, id, format=None):
+        snippet = self.get_object(id)
         serializer = MentorSerializer(snippet, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -91,8 +100,14 @@ class MentorDeleteAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
-    def delete(self, request, pk, format=None):
-        snippet = self.get_object(pk)
+    def get_object(self, id):
+        try:
+            return Mentor.objects.get(id=id)
+        except Mentor.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id):
+        snippet = self.get_object(id)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
