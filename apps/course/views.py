@@ -4,11 +4,15 @@ from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 from rest_framework.views import APIView
 from rest_framework import permissions
 from .models import Course
+from apps.students.models import Student
 from .serializers import CourseSerializer, CourseDetailSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from apps.students.models import Student
+from rest_framework.parsers import JSONParser
+
+from ..students.serializers import StudentSerializer
 
 
 class CourseListAPIView(APIView):
@@ -43,6 +47,7 @@ class CourseCreateAPIView(APIView):
 class CourseDetailAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
+    parser_classes = [JSONParser]
 
     def get_object(self, id):
         try:
@@ -52,8 +57,11 @@ class CourseDetailAPIView(APIView):
 
     def get(self, request, id, format=None):
         snippet = self.get_object(id)
+        students = Student.objects.filter(course=id)
         serializer = CourseDetailSerializer(snippet)
+        serializer2 = StudentSerializer(students, many=True)
         data = serializer.data
+        data['students'] = serializer2.data
         return Response(data)
 
     def put(self, request, id, format=None):
@@ -89,7 +97,7 @@ class CourseUpdateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class CourseMoveToAPIView(APIView):
+class CourseMoveToArchiveAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 

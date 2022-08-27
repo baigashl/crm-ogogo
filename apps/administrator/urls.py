@@ -10,7 +10,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('login/', MyObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login/', MyObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('create_subadmin/', CreateSubAdminView.as_view(), name='register'),
     path('list_subadmin/', SubAdminListAPIView.as_view(), name='list'),
