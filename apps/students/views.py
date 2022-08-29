@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
+from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework import permissions
 from .models import Student
@@ -42,6 +43,7 @@ class StudentCreateAPIView(APIView):
 class StudentDetailAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
+    parser_classes = [JSONParser]
 
     def get_object(self, id):
         try:
@@ -52,12 +54,28 @@ class StudentDetailAPIView(APIView):
     def get(self, request, id, format=None):
         snippet = self.get_object(id)
         serializer = StudentSerializer(snippet)
-        data = serializer.data
+        data = {
+            'id': snippet.id,
+            'course': snippet.course.id,
+            'first_name': snippet.first_name,
+            'second_name':snippet.second_name,
+            'phone': snippet.phone,
+            'paid': {
+                    'all': snippet.first_month_paid + snippet.second_month_paid + snippet.third_month_paid + snippet.fourth_month_paid,
+                    'first_month_paid': snippet.first_month_paid,
+                    'second_month_paid': snippet.second_month_paid,
+                    'third_month_paid': snippet.third_month_paid,
+                    'fourth_month_paid': snippet.fourth_month_paid,
+                    },
+            'description': snippet.id,
+            'quantity_of_classes': snippet.id,
+        }
         return Response(data)
 
     def put(self, request, id, format=None):
         snippet = self.get_object(id)
         serializer = StudentSerializer(snippet, data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

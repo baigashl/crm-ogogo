@@ -8,6 +8,10 @@ class Student(models.Model):
     second_name = models.CharField(max_length=255, null=False)
     phone = models.CharField(max_length=50, null=True)
     paid = models.IntegerField(default=0)
+    first_month_paid = models.IntegerField(default=0)
+    second_month_paid = models.IntegerField(default=0)
+    third_month_paid = models.IntegerField(default=0)
+    fourth_month_paid = models.IntegerField(default=0)
     description = models.CharField(max_length=255, null=False)
     quantity_of_classes = models.IntegerField(default=0, null=True, blank=True)
 
