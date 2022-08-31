@@ -7,6 +7,8 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     networks:
       - my-network
+    env_file:
+      - ./.env
 
 #  redis:
 #    image: redis:latest
@@ -34,6 +36,8 @@ services:
       - my-network
     depends_on:
       - db
+    env_file:
+      - ./.env
 
 #  celery:
 #    build:
@@ -63,21 +67,21 @@ services:
       - ./docker/nginx/dev:/etc/nginx/conf.d
       - static_volume:/app/backend/staticfiles
       - media_volume:/app/backend/media
-      - ./docker/nginx/certbot/conf:/etc/letsencrypt
-      - ./docker/nginx/certbot/www:/var/www/certbot
+#      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+#      - ./docker/nginx/certbot/www:/var/www/certbot
     networks:
       - my-network
     depends_on:
       - backend
       - db
 
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./docker/nginx/certbot/conf:/etc/letsencrypt
-      - ./docker/nginx/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+#  certbot:
+#    image: certbot/certbot
+#    restart: unless-stopped
+#    volumes:
+#      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+#      - ./docker/nginx/certbot/www:/var/www/certbot
+#    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   media_volume:
