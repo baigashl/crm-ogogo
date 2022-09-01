@@ -18,11 +18,21 @@ from ..students.serializers import StudentSerializer
 class CourseListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
-
+    parser_classes = [JSONParser]
     def get(self, request, format=None):
+        # student_list = []
         snippets = Course.objects.filter(active=True)
+        # students = Student.objects.all()
+        # for i in snippets:
+        #     for x in students:
+        #         if i.id == x.course.id:
+        #             student_list.append(x)
+        # print(student_list)
         serializer = CourseSerializer(snippets, many=True)
-        return Response(serializer.data)
+        # stud_serializer = StudentSerializer(student_list, many=True)
+        data = serializer.data
+        # data['students'] = stud_serializer.data
+        return Response(data)
 
     def post(self, request, format=None):
         serializer = CourseSerializer(data=request.data)
@@ -62,6 +72,7 @@ class CourseDetailAPIView(APIView):
         serializer2 = StudentSerializer(students, many=True)
         data = serializer.data
         data['students'] = serializer2.data
+        data['students_count'] = len(serializer2.data)
         return Response(data)
 
     def put(self, request, id, format=None):
