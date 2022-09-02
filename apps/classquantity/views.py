@@ -47,13 +47,13 @@ class ClassQuantityDetailAPIView(APIView):
 
     def get_object(self, id):
         try:
-            return ClassQuantity.objects.get(id=id)
+            return ClassQuantity.objects.filter(mentor_id=id)
         except ClassQuantity.DoesNotExist:
             raise Http404
 
     def get(self, request, id, format=None):
         snippet = self.get_object(id)
-        serializer = ClassQuantitySerializer(snippet)
+        serializer = ClassQuantitySerializer(snippet, many=True)
         data = serializer.data
         return Response(data)
 
@@ -77,7 +77,7 @@ class ClassQuantityUpdateAPIView(APIView):
 
     def get_object(self, id):
         try:
-            return ClassQuantity.objects.get(id=id)
+            return ClassQuantity.objects.get(mentor_id=id)
         except ClassQuantity.DoesNotExist:
             raise Http404
 
@@ -96,11 +96,11 @@ class ClassQuantityDeleteAPIView(APIView):
 
     def get_object(self, id):
         try:
-            return ClassQuantity.objects.get(id=id)
+            return ClassQuantity.objects.get(mentor_id=id)
         except ClassQuantity.DoesNotExist:
             raise Http404
 
     def delete(self, request, id, format=None):
-        snippet = self.get_object(pk)
+        snippet = self.get_object(id)
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
