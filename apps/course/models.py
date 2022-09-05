@@ -12,7 +12,6 @@ class Course(models.Model):
     address = models.CharField(max_length=255, null=True)
     start_date = models.DateTimeField(default=datetime.datetime.now, null=True, blank=True)
     active = models.BooleanField(default=True, null=True, blank=True)
-    course_type = models.CharField(max_length=255, null=False, blank=False)
 
     def __str__(self):
         return self.name
