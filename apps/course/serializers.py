@@ -7,13 +7,10 @@ from apps.students.models import Student
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # mentor = MentorSerializer(read_only=False)
-    # students = serializers.SerializerMethodField()
-    # url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Course
-        fields = ['id', 'mentor', 'name', 'description', 'address', 'start_date', 'active']
+        fields = ['id', 'mentor', 'name', 'description', 'address', 'start_date', 'active', 'course_type']
 
     def get_url(self, obj):
         request = self.context.get('request')
@@ -30,7 +27,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'mentor', 'name', 'description', 'students', 'address', 'start_date']
+        fields = ['id', 'mentor', 'name', 'description', 'students', 'address', 'start_date', 'course_type']
 
     # def get_url(self, obj):
     #     request = self.context.get('request')
