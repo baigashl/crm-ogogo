@@ -22,14 +22,14 @@ class CourseListAPIView(APIView):
 
     def get(self, request):
         snippets = Course.objects.filter(active=True)
-        # stud = []
-        # for c in snippets:
-        #     stud.append(Student.objects.filter(course__mentor_id=c.mentor.id))
-        serializer = CourseSerializer(snippets, many=True)
-        # serializer2 = StudentSerializer(stud, many=True)
-        data = serializer.data
-        # data['student_count'] = len(serializer2.data)
-        return Response(data)
+        data_list = []
+        for c in snippets:
+            serializer = CourseSerializer(c)
+            data = serializer.data
+            serializer2 = StudentSerializer(Student.objects.filter(course__mentor_id=c.mentor.id), many=True)
+            data['student_count'] = len(serializer2.data)
+            data_list.append(data)
+        return Response(data_list)
 
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
