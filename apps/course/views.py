@@ -19,22 +19,19 @@ class CourseListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
     # authentication_classes = []
     parser_classes = [JSONParser]
-    def get(self, request, format=None):
-        # student_list = []
+
+    def get(self, request):
         snippets = Course.objects.filter(active=True)
-        # students = Student.objects.all()
-        # for i in snippets:
-        #     for x in students:
-        #         if i.id == x.course.id:
-        #             student_list.append(x)
-        # print(student_list)
+        # stud = []
+        # for c in snippets:
+        #     stud.append(Student.objects.filter(course__mentor_id=c.mentor.id))
         serializer = CourseSerializer(snippets, many=True)
-        # stud_serializer = StudentSerializer(student_list, many=True)
+        # serializer2 = StudentSerializer(stud, many=True)
         data = serializer.data
-        # data['students'] = stud_serializer.data
+        # data['student_count'] = len(serializer2.data)
         return Response(data)
 
-    def post(self, request, format=None):
+    def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

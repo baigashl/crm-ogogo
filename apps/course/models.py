@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from apps.mentor.models import Mentor
+from django.utils import timezone
 
 
 class Course(models.Model):
@@ -9,7 +10,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100, null=False)
     description = models.CharField(max_length=255)
     address = models.CharField(max_length=255, null=True)
-    start_date = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
+    start_date = models.DateTimeField(default=datetime.datetime.now, null=True, blank=True)
     active = models.BooleanField(default=True, null=True, blank=True)
 
     def __str__(self):

@@ -30,7 +30,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'mentor', 'name', 'description', 'students', 'address']
+        fields = ['id', 'mentor', 'name', 'description', 'students', 'address', 'start_date']
 
     # def get_url(self, obj):
     #     request = self.context.get('request')
