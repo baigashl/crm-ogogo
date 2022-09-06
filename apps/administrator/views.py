@@ -2,9 +2,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import Http404
 from django.contrib.auth.models import Group
-
+from django.contrib.auth.decorators import user_passes_test
 from .serializers import MyTokenObtainPairSerializer
 from django.contrib.auth.models import User
 from .serializers import ListSubAdminSerializer, SubAdminSerializer
@@ -18,6 +17,11 @@ class MyObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+def is_admin(user):
+    return user.groups.filter(name='ADMIN').exists()
+
+
+@user_passes_test(is_admin)
 class CreateSubAdminView(APIView):
     permission_classes = (permissions.AllowAny,)
     # authentication_classes = []
