@@ -17,6 +17,8 @@ class StudentListAPIView(APIView):
 
     def get(self, request, format=None):
         snippets = Student.objects.all()
+        for i in snippets:
+            i.paid = i.first_month_paid + i.second_month_paid + i.third_month_paid + i.fourth_month_paid
         serializer = StudentSerializer(snippets, many=True)
         return Response(serializer.data)
 

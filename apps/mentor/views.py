@@ -9,10 +9,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 
+from apps.classquantity.models import ClassQuantity
 
 class MentorListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
-    # authentication_classes = []
 
     def get_object(self, id):
         try:
@@ -20,10 +20,19 @@ class MentorListAPIView(APIView):
         except Mentor.DoesNotExist:
             raise Http404
 
-    def get(self, request, format=None):
+    def get(self, request):
         snippets = Mentor.objects.all()
-        serializer = MentorSerializer(snippets, many=True)
-        return Response(serializer.data)
+        data_list = []
+        for c in snippets:
+            serializer = MentorSerializer(c)
+            data = serializer.data
+            class_quan = ClassQuantity.objects.filter(mentor_id=c.id)
+            quan = 0
+            for i in class_quan:
+                quan += i.quantity_of_classes
+            data['quantiy_of_classes'] = quan
+            data_list.append(data)
+        return Response(data_list)
 
 
 

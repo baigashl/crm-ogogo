@@ -1,9 +1,9 @@
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
-from django.contrib.auth.decorators import user_passes_test
 from .serializers import MyTokenObtainPairSerializer
 from django.contrib.auth.models import User
 from .serializers import ListSubAdminSerializer, SubAdminSerializer
@@ -21,9 +21,8 @@ def is_admin(user):
     return user.groups.filter(name='ADMIN').exists()
 
 
-# @user_passes_test(is_admin)
 class CreateSubAdminView(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAdminUser,)
     # authentication_classes = []
 
     def post(self, request):
@@ -51,10 +50,26 @@ class CreateSubAdminView(APIView):
 
 
 class SubAdminListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAdminUser]
     # authentication_classes = []
 
     def get(self, request, format=None):
         snippets = SubAdmin.objects.all()
         serializer = ListSubAdminSerializer(snippets, many=True)
         return Response(serializer.data)
+
+
+class SubAdminDeleteAPIView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+    # authentication_classes = [SessionAuthentication]
+
+    def get_object(self, id):
+        try:
+            return SubAdmin.objects.get(id=id)
+        except SubAdmin.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, id):
+        snippet = self.get_object(id)
+        snippet.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
