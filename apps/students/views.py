@@ -53,7 +53,7 @@ class StudentDetailAPIView(APIView):
         except Student.DoesNotExist:
             raise Http404
 
-    def get(self, request, id, format=None):
+    def get(self, request, id):
         snippet = self.get_object(id)
         serializer = StudentSerializer(snippet)
         data = {
@@ -69,8 +69,8 @@ class StudentDetailAPIView(APIView):
                     'third_month_paid': snippet.third_month_paid,
                     'fourth_month_paid': snippet.fourth_month_paid,
                     },
-            'description': snippet.id,
-            'quantity_of_classes': snippet.id,
+            'description': snippet.description,
+            'quantity_of_classes': snippet.quantity_of_classes,
         }
         return Response(data)
 

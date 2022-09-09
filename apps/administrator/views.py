@@ -17,12 +17,10 @@ class MyObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-def is_admin(user):
-    return user.groups.filter(name='ADMIN').exists()
 
 
 class CreateSubAdminView(APIView):
-    permission_classes = (permissions.IsAdminUser,)
+    permission_classes = [permissions.AllowAny]
     # authentication_classes = []
 
     def post(self, request):
@@ -50,7 +48,7 @@ class CreateSubAdminView(APIView):
 
 
 class SubAdminListAPIView(APIView):
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
     # authentication_classes = []
 
     def get(self, request, format=None):
@@ -60,7 +58,7 @@ class SubAdminListAPIView(APIView):
 
 
 class SubAdminDeleteAPIView(APIView):
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
