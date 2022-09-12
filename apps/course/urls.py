@@ -6,7 +6,9 @@ from .views import (
     CourseUpdateAPIView,
     CourseDeleteAPIView,
     ArchiveCourseListAPIView,
-    CourseMoveToArchiveAPIView
+    CourseMoveToArchiveAPIView,
+    CourseTypeListAPIView,
+    CourseTypeDetailAPIView
 )
 
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -19,5 +21,8 @@ urlpatterns = [
     path('<int:id>/move_to_archive/', CourseMoveToArchiveAPIView.as_view(), name='move_to_archive'),
     path('<int:id>/delete/', CourseDeleteAPIView.as_view(), name='delete'),
     path('archive/', ArchiveCourseListAPIView.as_view(), name='archive'),
+
+    path('type/', CourseTypeListAPIView.as_view(), name='type'),
+    path('type/<int:id>/', CourseTypeDetailAPIView.as_view(), name='type-detail'),
 ]
 urlpatterns = format_suffix_patterns(urlpatterns)

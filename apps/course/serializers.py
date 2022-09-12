@@ -1,4 +1,4 @@
-from .models import Course
+from .models import Course, CourseType
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from apps.mentor.serializers import MentorSerializer
@@ -36,3 +36,14 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     def get_students(self, obj):
         data = Student.objects.filter(course_id=obj.id)
         return StudentSerializer(data, many=True).data
+
+
+class CourseTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CourseType
+        fields = ['id', 'type']
+
+    def get_url(self, obj):
+        request = self.context.get('request')
+        return reverse("detail", kwargs={'id': obj.id}, request=request)
