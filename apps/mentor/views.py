@@ -8,6 +8,8 @@ from .serializers import MentorSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
+from apps.course.models import Course
+from apps.course.serializers import CourseSerializer
 
 from apps.classquantity.models import ClassQuantity
 
@@ -68,8 +70,11 @@ class MentorDetailAPIView(APIView):
 
     def get(self, request, id, format=None):
         snippet = self.get_object(id)
+        course = Course.objects.filter(mentor_id=id)
         serializer = MentorSerializer(snippet)
+        serializer2 = CourseSerializer(course, many=True)
         data = serializer.data
+        data['course'] = serializer2.data
         return Response(data)
 
     def put(self, request, id):

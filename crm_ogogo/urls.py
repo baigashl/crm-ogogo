@@ -16,7 +16,11 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_swagger.views import get_swagger_view
+
 from . import settings
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +30,7 @@ urlpatterns = [
     path('api/administrator/', include('apps.administrator.urls')),
     path('api/classquantity/', include('apps.classquantity.urls')),
 ]
+
+
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)

@@ -9,3 +9,4 @@ psycopg2-binary==2.9.3
 PyJWT==2.4.0
 pytz==2022.1
 sqlparse==0.4.2
+django-rest-swagger

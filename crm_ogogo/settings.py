@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'rest_framework_swagger',
 
     'apps.course',
     'apps.mentor',
@@ -123,6 +124,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+
+# REST_FRAMEWORK = {
+#     "DATETIME_FORMATS": ["%Y-%M-%D"]
+# }
 
 
 # Internationalization

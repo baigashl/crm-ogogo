@@ -7,6 +7,7 @@ from apps.students.models import Student
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    start_date = serializers.DateTimeField(format="%Y-%m-%d")
 
     class Meta:
         model = Course
@@ -24,6 +25,7 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     mentor = MentorSerializer(read_only=True)
     students = serializers.SerializerMethodField()
+    start_date = serializers.DateTimeField(format="%Y-%m-%d")
 
     class Meta:
         model = Course
