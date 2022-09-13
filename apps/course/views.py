@@ -13,6 +13,7 @@ from apps.students.models import Student
 from rest_framework.parsers import JSONParser
 
 from ..students.serializers import StudentSerializer
+from django.core.paginator import Paginator
 
 
 class CourseListAPIView(APIView):
@@ -23,13 +24,15 @@ class CourseListAPIView(APIView):
     def get(self, request):
         snippets = Course.objects.filter(active=True)
         data_list = []
+        page_num = int(self.request.query_params.get('page'))
         for c in snippets:
             serializer = CourseSerializer(c)
             data = serializer.data
             serializer2 = StudentSerializer(Student.objects.filter(course_id=c.id), many=True)
             data['student_count'] = len(serializer2.data)
             data_list.append(data)
-        return Response(data_list)
+        data = data_list[page_num*10-10:page_num*10]
+        return Response(data)
 
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
