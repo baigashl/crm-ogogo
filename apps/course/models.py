@@ -17,7 +17,7 @@ class Course(models.Model):
     name = models.CharField(max_length=100, null=False)
     description = models.CharField(max_length=255)
     address = models.CharField(max_length=255, null=True)
-    start_date = models.DateField(default=datetime.datetime.now, null=True, blank=True)
+    start_date = models.DateTimeField(default=datetime.datetime.now, null=True, blank=True)
     active = models.BooleanField(default=True, null=True, blank=True)
     type = models.ForeignKey(CourseType, on_delete=models.SET_NULL, null=True, blank=True)
 
