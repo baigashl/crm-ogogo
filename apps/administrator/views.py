@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
-from .serializers import MyTokenObtainPairSerializer, LoginSerializer
+from .serializers import LoginSerializer
 from django.contrib.auth.models import User
 from .serializers import ListSubAdminSerializer, SubAdminSerializer
 from .permissions import AnonPermissionOnly

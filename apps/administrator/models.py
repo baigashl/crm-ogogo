@@ -20,8 +20,8 @@ class SubAdmin(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     second_name = models.CharField(max_length=100, null=False, blank=False)
     father_name = models.CharField(max_length=255, null=False, blank=False)
-    personal_phone = models.IntegerField(null=False, blank=False)
-    work_phone = models.IntegerField(null=False, blank=False)
+    personal_phone = models.CharField(max_length=255, null=False, blank=False)
+    work_phone = models.CharField(max_length=255, null=False, blank=False)
     branch = models.CharField(max_length=255, null=False, blank=False)
 
     def __str__(self):
