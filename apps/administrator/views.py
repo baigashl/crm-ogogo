@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
-from .serializers import MyTokenObtainPairSerializer
+from .serializers import MyTokenObtainPairSerializer, LoginSerializer
 from django.contrib.auth.models import User
 from .serializers import ListSubAdminSerializer, SubAdminSerializer
 from .permissions import AnonPermissionOnly
@@ -12,11 +12,16 @@ from rest_framework import permissions
 from .models import SubAdmin
 
 
-class MyObtainPairView(TokenObtainPairView):
+class MyObtainPairView(APIView):
     permission_classes = (AnonPermissionOnly,)
-    serializer_class = MyTokenObtainPairSerializer
 
+    def post(self, request, format=None):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            response_data = serializer.save()
+            return Response(response_data)
 
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateSubAdminView(APIView):

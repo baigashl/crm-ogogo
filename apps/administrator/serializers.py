@@ -1,3 +1,7 @@
+from datetime import timedelta, datetime
+
+import jwt
+from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
@@ -6,16 +10,70 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import SubAdmin
+from django.contrib.auth.models import User as UserModel
+from .models import Administrator
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+JWT_SECRET = 'my_secret'  #   секретное слово для подписи
+JWT_ACCESS_TTL = 60 * 5   # время жизни access токена в секундах (5 мин)
+JWT_REFRESH_TTL = 3600 * 24 * 7 # время жизни refresh токена в секундах (неделя)
 
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
 
-        token['username'] = user.username
-        return token
+
+
+# UserModel = get_user_model()
+
+class LoginSerializer(serializers.Serializer):
+    # ==== INPUT ====
+    email = serializers.EmailField(required=True, write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
+    # ==== OUTPUT ====
+    access = serializers.CharField(read_only=True)
+    refresh = serializers.CharField(read_only=True)
+
+    def validate(self, attrs):
+        # standard validation
+        validated_data = super().validate(attrs)
+
+        # validate email and password
+        email = validated_data['email']
+        password = validated_data['password']
+        error_msg = ('email or password are incorrect')
+        try:
+            user = UserModel.objects.get(email=email)
+            if not user.check_password(password):
+                raise serializers.ValidationError(error_msg)
+            validated_data['user'] = user
+        except UserModel.DoesNotExist:
+            raise serializers.ValidationError(error_msg)
+
+        return validated_data
+
+    def create(self, validated_data):
+        roles = [i.name for i in validated_data['user'].groups.all()]
+
+
+        access_payload = {
+            'iss': 'backend-api',
+            'user_id': validated_data['user'].id,
+            'exp': datetime.utcnow() + timedelta(seconds=JWT_ACCESS_TTL),
+            'type': 'access',
+            'role': roles[0]
+        }
+        access = jwt.encode(payload=access_payload, key=JWT_SECRET)
+
+        refresh_payload = {
+            'iss': 'backend-api',
+            'user_id': validated_data['user'].id,
+            'exp': datetime.utcnow() + timedelta(seconds=JWT_REFRESH_TTL),
+            'type': 'refresh'
+        }
+        refresh = jwt.encode(payload=refresh_payload, key=JWT_SECRET)
+
+        return {
+            'access': access,
+            'refresh': refresh
+        }
 
 
 class RegisterSerializer(serializers.ModelSerializer):
