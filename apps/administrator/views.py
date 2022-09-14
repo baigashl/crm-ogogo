@@ -41,6 +41,9 @@ class CreateSubAdminView(APIView):
                 username=request.data['username'],
                 name=request.data['name'],
                 second_name=request.data['second_name'],
+                father_name=request.data['father_name'],
+                work_phone=request.data['work_phone'],
+                personal_phone=request.data['personal_phone'],
                 branch=request.data['branch']
             )
             subadmin.save()
