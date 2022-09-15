@@ -4,6 +4,7 @@ from rest_framework.reverse import reverse
 
 
 class StudentSerializer(serializers.ModelSerializer):
+    paid = serializers.SerializerMethodField('get_paid')
 
     class Meta:
         model = Student
@@ -18,8 +19,14 @@ class StudentSerializer(serializers.ModelSerializer):
                   'third_month_paid',
                   'fourth_month_paid',
                   'description',
-                  'quantity_of_classes']
+                  'quantity_of_classes',
+                  'active'
+        ]
 
     def get_url(self, obj):
         request = self.context.get('request')
         return reverse("detail", kwargs={'id': obj.id}, request=request)
+
+    def get_paid(self, obj):
+        all_paid = obj.first_month_paid + obj.second_month_paid + obj.third_month_paid + obj.fourth_month_paid
+        return all_paid

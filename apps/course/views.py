@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from .models import Course, CourseType
 from apps.students.models import Student
-from .serializers import CourseSerializer, CourseDetailSerializer, CourseTypeSerializer
+from .serializers import CourseSerializer, CourseDetailSerializer, CourseTypeSerializer, CountSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
@@ -32,7 +32,11 @@ class CourseListAPIView(APIView):
             data['student_count'] = len(serializer2.data)
             data_list.append(data)
         data = data_list[page_num*10-10:page_num*10]
-        return Response(data)
+        count = {
+            "count": snippets.count(),
+            "response": data
+        }
+        return Response(count)
 
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
@@ -83,11 +87,6 @@ class CourseDetailAPIView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id, format=None):
-        snippet = self.get_object(id)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class CourseUpdateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -120,6 +119,10 @@ class CourseMoveToArchiveAPIView(APIView):
 
     def delete(self, request, id):
         snippet = Course.objects.get(id=id)
+        students = Student.objects.filter(course_id=id)
+        for student in students:
+            student.active = False
+            student.save()
         snippet.active = False
         snippet.save()
         print(snippet.active)
@@ -132,8 +135,16 @@ class ArchiveCourseListAPIView(APIView):
 
     def get(self, request):
         snippets = Course.objects.filter(active=False)
-        serializer = CourseSerializer(snippets, many=True)
-        return Response(serializer.data)
+        data_list = []
+        page_num = int(self.request.query_params.get('page'))
+        for c in snippets:
+            serializer = CourseSerializer(c)
+            data = serializer.data
+            serializer2 = StudentSerializer(Student.objects.filter(course_id=c.id, active=False), many=True)
+            data['student_count'] = len(serializer2.data)
+            data_list.append(data)
+        data = data_list[page_num*10-10:page_num*10]
+        return Response(data)
 
 
 class CourseDeleteAPIView(APIView):
@@ -147,6 +158,9 @@ class CourseDeleteAPIView(APIView):
 
     def delete(self, request, id, format=None):
         snippet = self.get_object(id)
+        students = Student.objects.filter(course_id=id)
+        for student in students:
+            student.delete()
         snippet.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

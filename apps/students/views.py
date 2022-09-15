@@ -1,6 +1,4 @@
-from django.shortcuts import render
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
+from django.core.paginator import Paginator
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework import permissions
@@ -16,11 +14,34 @@ class StudentListAPIView(APIView):
     # authentication_classes = []
 
     def get(self, request, format=None):
-        snippets = Student.objects.all()
-        for i in snippets:
-            i.paid = i.first_month_paid + i.second_month_paid + i.third_month_paid + i.fourth_month_paid
+        snippets = Student.objects.filter(active=True)
         serializer = StudentSerializer(snippets, many=True)
-        return Response(serializer.data)
+        data = {
+            'count': snippets.count(),
+            'data': serializer.data
+        }
+        return Response(data)
+
+    def post(self, request, format=None):
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class StudentArchiveListAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    # authentication_classes = []
+
+    def get(self, request, format=None):
+        snippets = Student.objects.filter(active=False)
+        serializer = StudentSerializer(snippets, many=True)
+        data = {
+            'count': snippets.count(),
+            'data': serializer.data
+        }
+        return Response(data)
 
     def post(self, request, format=None):
         serializer = StudentSerializer(data=request.data)
@@ -56,23 +77,7 @@ class StudentDetailAPIView(APIView):
     def get(self, request, id):
         snippet = self.get_object(id)
         serializer = StudentSerializer(snippet)
-        data = {
-            'id': snippet.id,
-            'course': snippet.course.id,
-            'first_name': snippet.first_name,
-            'second_name':snippet.second_name,
-            'phone': snippet.phone,
-            'paid': {
-                    'all': snippet.first_month_paid + snippet.second_month_paid + snippet.third_month_paid + snippet.fourth_month_paid,
-                    'first_month_paid': snippet.first_month_paid,
-                    'second_month_paid': snippet.second_month_paid,
-                    'third_month_paid': snippet.third_month_paid,
-                    'fourth_month_paid': snippet.fourth_month_paid,
-                    },
-            'description': snippet.description,
-            'quantity_of_classes': snippet.quantity_of_classes,
-        }
-        return Response(data)
+        return Response(serializer.data)
 
     def put(self, request, id, format=None):
         snippet = self.get_object(id)
@@ -82,11 +87,6 @@ class StudentDetailAPIView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, id, format=None):
-        snippet = self.get_object(id)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class StudentUpdateAPIView(APIView):
