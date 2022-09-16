@@ -1,6 +1,5 @@
 from django.http import Http404
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
@@ -48,7 +47,6 @@ class CreateSubAdminView(APIView):
             )
             subadmin.save()
             print(request.data['password'])
-
             my_admin_group = Group.objects.get_or_create(name='SUBADMIN')
             my_admin_group[0].user_set.add(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
