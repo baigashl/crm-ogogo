@@ -34,7 +34,8 @@ class CourseListAPIView(APIView):
         data = data_list[page_num*10-10:page_num*10]
         count = {
             "count": snippets.count(),
-            "response": data
+            "response": data,
+            "all_data": data_list,
         }
         return Response(count)
 

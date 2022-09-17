@@ -16,7 +16,6 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         request = self.context.get('request')
         return reverse("detail", kwargs={'id': obj.id}, request=request)
-
     # def get_students(self, obj):
     #     data = Student.objects.filter(course_id=obj.id)
     #     return StudentSerializer(data, many=True).data
