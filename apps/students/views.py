@@ -7,6 +7,7 @@ from .serializers import StudentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
+from apps.administrator.permissions import IsSubAdminPermission
 
 
 class StudentListAPIView(APIView):
@@ -22,16 +23,9 @@ class StudentListAPIView(APIView):
         }
         return Response(data)
 
-    def post(self, request, format=None):
-        serializer = StudentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class StudentArchiveListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def get(self, request, format=None):
@@ -52,7 +46,7 @@ class StudentArchiveListAPIView(APIView):
 
 
 class StudentCreateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def post(self, request, format=None):
@@ -64,7 +58,7 @@ class StudentCreateAPIView(APIView):
 
 
 class StudentDetailAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
     parser_classes = [JSONParser]
 
@@ -90,7 +84,7 @@ class StudentDetailAPIView(APIView):
 
 
 class StudentUpdateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -109,7 +103,7 @@ class StudentUpdateAPIView(APIView):
 
 
 class StudentDeleteAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):

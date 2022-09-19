@@ -9,6 +9,7 @@ from .serializers import ListSubAdminSerializer, SubAdminSerializer
 from .permissions import AnonPermissionOnly
 from rest_framework import permissions
 from .models import SubAdmin
+from .permissions import IsAdminPermission
 
 
 class MyObtainPairView(APIView):
@@ -24,7 +25,7 @@ class MyObtainPairView(APIView):
 
 
 class CreateSubAdminView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAdminPermission]
     # authentication_classes = []
 
     def post(self, request):

@@ -11,6 +11,7 @@ from rest_framework import status
 from django.http import Http404
 from apps.students.models import Student
 from rest_framework.parsers import JSONParser
+from apps.administrator.permissions import IsSubAdminPermission
 
 from ..students.serializers import StudentSerializer
 from django.core.paginator import Paginator
@@ -48,7 +49,7 @@ class CourseListAPIView(APIView):
 
 
 class CourseCreateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def post(self, request):
@@ -60,7 +61,7 @@ class CourseCreateAPIView(APIView):
 
 
 class CourseDetailAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
     parser_classes = [JSONParser]
 
@@ -90,7 +91,7 @@ class CourseDetailAPIView(APIView):
 
 
 class CourseUpdateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -109,7 +110,7 @@ class CourseUpdateAPIView(APIView):
 
 
 class CourseMoveToArchiveAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -131,7 +132,7 @@ class CourseMoveToArchiveAPIView(APIView):
 
 
 class ArchiveCourseListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def get(self, request):
@@ -149,7 +150,7 @@ class ArchiveCourseListAPIView(APIView):
 
 
 class CourseDeleteAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
 
     def get_object(self, id):
         try:
@@ -167,7 +168,7 @@ class CourseDeleteAPIView(APIView):
 
 
 class CourseTypeListAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
     parser_classes = [JSONParser]
 
@@ -185,7 +186,7 @@ class CourseTypeListAPIView(APIView):
 
 
 class CourseTypeDetailAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
     parser_classes = [JSONParser]
 

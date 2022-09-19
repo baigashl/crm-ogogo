@@ -10,6 +10,16 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.user == request.user
 
 
+class IsAdminPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.groups.filter(name='ADMIN').exists()
+
+
+class IsSubAdminPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.groups.filter(name='SUBADMIN').exists()
+
+
 class AnonPermissionOnly(permissions.BasePermission):
     message = "You are already authenticated"
 

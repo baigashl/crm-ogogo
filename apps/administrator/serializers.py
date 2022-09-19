@@ -1,17 +1,10 @@
 from datetime import timedelta, datetime
-
 import jwt
-from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.reverse import reverse
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 from .models import SubAdmin
 from django.contrib.auth.models import User as UserModel
-from .models import Administrator
 
 
 JWT_SECRET = 'my_secret'  #   секретное слово для подписи
@@ -19,13 +12,9 @@ JWT_ACCESS_TTL = 60 * 5   # время жизни access токена в сек�
 JWT_REFRESH_TTL = 3600 * 24 * 7 # время жизни refresh токена в секундах (неделя)
 
 
-
-
-# UserModel = get_user_model()
-
 class LoginSerializer(serializers.Serializer):
     # ==== INPUT ====
-    email = serializers.EmailField(required=True, write_only=True)
+    username = serializers.CharField(required=True, write_only=True)
     password = serializers.CharField(required=True, write_only=True)
     # ==== OUTPUT ====
     access = serializers.CharField(read_only=True)
@@ -36,11 +25,11 @@ class LoginSerializer(serializers.Serializer):
         validated_data = super().validate(attrs)
 
         # validate email and password
-        email = validated_data['email']
+        username = validated_data['username']
         password = validated_data['password']
-        error_msg = ('email or password are incorrect')
+        error_msg = ('username or password are incorrect')
         try:
-            user = UserModel.objects.get(email=email)
+            user = UserModel.objects.get(username=username)
             if not user.check_password(password):
                 raise serializers.ValidationError(error_msg)
             validated_data['user'] = user
@@ -76,40 +65,40 @@ class LoginSerializer(serializers.Serializer):
         }
 
 
-class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    password = serializers.CharField(
-        write_only=True,
-        required=True,
-        validators=[validate_password]
-    )
-    password2 = serializers.CharField(
-        write_only=True,
-        required=True
-    )
-
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'password2', 'email']
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn`t match."}
-            )
-        return attrs
-
-    def create(self, validated_data):
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+# class RegisterSerializer(serializers.ModelSerializer):
+#     email = serializers.EmailField(
+#         required=True,
+#         validators=[UniqueValidator(queryset=User.objects.all())]
+#     )
+#     password = serializers.CharField(
+#         write_only=True,
+#         required=True,
+#         validators=[validate_password]
+#     )
+#     password2 = serializers.CharField(
+#         write_only=True,
+#         required=True
+#     )
+#
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password', 'password2', 'email']
+#
+#     def validate(self, attrs):
+#         if attrs['password'] != attrs['password2']:
+#             raise serializers.ValidationError(
+#                 {"password": "Password fields didn`t match."}
+#             )
+#         return attrs
+#
+#     def create(self, validated_data):
+#         user = User.objects.create(
+#             username=validated_data['username'],
+#             email=validated_data['email']
+#         )
+#         user.set_password(validated_data['password'])
+#         user.save()
+#         return user
 
 
 class SubAdminSerializer(serializers.ModelSerializer):

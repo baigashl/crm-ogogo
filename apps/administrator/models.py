@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 class Administrator(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.EmailField(unique=True)
     name = models.CharField(max_length=100)
     second_name = models.CharField(max_length=100)
     branch = models.CharField(max_length=255, null=True)

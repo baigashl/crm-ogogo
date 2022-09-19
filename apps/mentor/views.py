@@ -10,8 +10,9 @@ from rest_framework import status
 from django.http import Http404
 from apps.course.models import Course
 from apps.course.serializers import CourseSerializer
-
+from apps.administrator.permissions import IsSubAdminPermission
 from apps.classquantity.models import ClassQuantity
+
 
 class MentorListAPIView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -47,7 +48,7 @@ class MentorListAPIView(APIView):
 
 
 class MentorCreateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def post(self, request, format=None):
@@ -59,7 +60,7 @@ class MentorCreateAPIView(APIView):
 
 
 class MentorDetailAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -92,7 +93,7 @@ class MentorDetailAPIView(APIView):
 
 
 class MentorUpdateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -111,7 +112,7 @@ class MentorUpdateAPIView(APIView):
 
 
 class MentorDeleteAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):

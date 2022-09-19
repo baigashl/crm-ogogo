@@ -10,6 +10,7 @@ from rest_framework import status
 from django.http import Http404
 from .models import ClassQuantity
 from apps.mentor.models import Mentor
+from apps.administrator.permissions import IsSubAdminPermission
 
 
 class ClassQuantityListAPIView(APIView):
@@ -30,7 +31,7 @@ class ClassQuantityListAPIView(APIView):
 
 
 class ClassQuantityCreateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
     def post(self, request):
@@ -42,7 +43,7 @@ class ClassQuantityCreateAPIView(APIView):
 
 
 class ClassQuantityDetailAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -72,7 +73,7 @@ class ClassQuantityDetailAPIView(APIView):
 
 
 class ClassQuantityUpdateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):
@@ -91,7 +92,7 @@ class ClassQuantityUpdateAPIView(APIView):
 
 
 class ClassQuantityDeleteAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsSubAdminPermission]
     # authentication_classes = [SessionAuthentication]
 
     def get_object(self, id):

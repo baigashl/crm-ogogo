@@ -11,7 +11,7 @@ class Student(models.Model):
     second_month_paid = models.IntegerField(default=0)
     third_month_paid = models.IntegerField(default=0)
     fourth_month_paid = models.IntegerField(default=0)
-    description = models.CharField(max_length=255, null=False)
+    description = models.CharField(max_length=255, null=True, blank=True)
     quantity_of_classes = models.IntegerField(default=0, null=True, blank=True)
     active = models.BooleanField(default=True, null=True, blank=True)
 
