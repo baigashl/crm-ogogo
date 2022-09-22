@@ -3,7 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import Group
-from .serializers import LoginSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import MyTokenObtainPairSerializer
 from django.contrib.auth.models import User
 from .serializers import ListSubAdminSerializer, SubAdminSerializer
 from .permissions import AnonPermissionOnly
@@ -12,16 +14,20 @@ from .models import SubAdmin
 from .permissions import IsAdminPermission
 
 
-class MyObtainPairView(APIView):
+class MyObtainPairView(TokenObtainPairView):
     permission_classes = (AnonPermissionOnly,)
+    serializer_class = MyTokenObtainPairSerializer
 
-    def post(self, request, format=None):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            response_data = serializer.save()
-            return Response(response_data)
-
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class MyObtainPairView(APIView):
+#     permission_classes = (AnonPermissionOnly,)
+#
+#     def post(self, request, format=None):
+#         serializer = MyTokenObtainPairSerializer(data=request.data)
+#         if serializer.is_valid():
+#             response_data = serializer.save()
+#             return Response(response_data)
+#
+#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateSubAdminView(APIView):
@@ -47,8 +53,9 @@ class CreateSubAdminView(APIView):
                 branch=request.data['branch']
             )
             subadmin.save()
-            print(request.data['password'])
             my_admin_group = Group.objects.get_or_create(name='SUBADMIN')
+            print(my_admin_group)
+            print(my_admin_group[0])
             my_admin_group[0].user_set.add(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

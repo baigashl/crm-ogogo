@@ -3,6 +3,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 from rest_framework.views import APIView
 from rest_framework import permissions
+from rest_framework_simplejwt import authentication
 from .models import Course, CourseType
 from apps.students.models import Student
 from .serializers import CourseSerializer, CourseDetailSerializer, CourseTypeSerializer, CountSerializer
@@ -12,7 +13,7 @@ from django.http import Http404
 from apps.students.models import Student
 from rest_framework.parsers import JSONParser
 from apps.administrator.permissions import IsSubAdminPermission
-
+from django.contrib.auth import get_user
 from ..students.serializers import StudentSerializer
 from django.core.paginator import Paginator
 
@@ -168,13 +169,17 @@ class CourseDeleteAPIView(APIView):
 
 
 class CourseTypeListAPIView(APIView):
-    permission_classes = [IsSubAdminPermission]
-    # authentication_classes = []
+    # permission_classes = [permissions.AllowAny]
+    # authentication_classes = [authentication.JWTAuthentication]
     parser_classes = [JSONParser]
 
     def get(self, request):
         snippets = CourseType.objects.all()
         serializer = CourseTypeSerializer(snippets, many=True)
+        print(request.user.groups.all())
+        print(request.user.groups.filter(name='SUBADMIN').exists())
+        print("user", request.user)
+        print(request.user)
         return Response(serializer.data)
 
     def post(self, request):

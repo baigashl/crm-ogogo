@@ -3,66 +3,79 @@ import jwt
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.reverse import reverse
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import SubAdmin
 from django.contrib.auth.models import User as UserModel
 
 
-JWT_SECRET = 'my_secret'  #   секретное слово для подписи
-JWT_ACCESS_TTL = 60 * 5   # время жизни access токена в секундах (5 мин)
-JWT_REFRESH_TTL = 3600 * 24 * 7 # время жизни refresh токена в секундах (неделя)
+# JWT_SECRET = 'my_secret'  #   секретное слово для подписи
+# JWT_ACCESS_TTL = 60 * 5   # время жизни access токена в секундах (5 мин)
+# JWT_REFRESH_TTL = 3600 * 24 * 7 # время жизни refresh токена в секундах (неделя)
 
 
-class LoginSerializer(serializers.Serializer):
-    # ==== INPUT ====
-    username = serializers.CharField(required=True, write_only=True)
-    password = serializers.CharField(required=True, write_only=True)
-    # ==== OUTPUT ====
-    access = serializers.CharField(read_only=True)
-    refresh = serializers.CharField(read_only=True)
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
-    def validate(self, attrs):
-        # standard validation
-        validated_data = super().validate(attrs)
-
-        # validate email and password
-        username = validated_data['username']
-        password = validated_data['password']
-        error_msg = ('username or password are incorrect')
-        try:
-            user = UserModel.objects.get(username=username)
-            if not user.check_password(password):
-                raise serializers.ValidationError(error_msg)
-            validated_data['user'] = user
-        except UserModel.DoesNotExist:
-            raise serializers.ValidationError(error_msg)
-
-        return validated_data
-
-    def create(self, validated_data):
-        roles = [i.name for i in validated_data['user'].groups.all()]
+    @classmethod
+    def get_token(cls, user):
+        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+        roles = [i.name for i in user.groups.all()]
+        print(roles)
+        token['username'] = user.username
+        token['role'] = roles[0]
+        return token
 
 
-        access_payload = {
-            'iss': 'backend-api',
-            'user_id': validated_data['user'].id,
-            'exp': datetime.utcnow() + timedelta(seconds=JWT_ACCESS_TTL),
-            'type': 'access',
-            'role': roles[0]
-        }
-        access = jwt.encode(payload=access_payload, key=JWT_SECRET)
-
-        refresh_payload = {
-            'iss': 'backend-api',
-            'user_id': validated_data['user'].id,
-            'exp': datetime.utcnow() + timedelta(seconds=JWT_REFRESH_TTL),
-            'type': 'refresh'
-        }
-        refresh = jwt.encode(payload=refresh_payload, key=JWT_SECRET)
-
-        return {
-            'access': access,
-            'refresh': refresh
-        }
+# class LoginSerializer(serializers.Serializer):
+#     # ==== INPUT ====
+#     username = serializers.CharField(required=True, write_only=True)
+#     password = serializers.CharField(required=True, write_only=True)
+#     # ==== OUTPUT ====
+#     access = serializers.CharField(read_only=True)
+#     refresh = serializers.CharField(read_only=True)
+#
+#     def validate(self, attrs):
+#         # standard validation
+#         validated_data = super().validate(attrs)
+#
+#         # validate email and password
+#         username = validated_data['username']
+#         password = validated_data['password']
+#         error_msg = ('username or password are incorrect')
+#         try:
+#             user = UserModel.objects.get(username=username)
+#             if not user.check_password(password):
+#                 raise serializers.ValidationError(error_msg)
+#             validated_data['user'] = user
+#         except UserModel.DoesNotExist:
+#             raise serializers.ValidationError(error_msg)
+#
+#         return validated_data
+#
+#     def create(self, validated_data):
+#         roles = [i.name for i in validated_data['user'].groups.all()]
+#         access_payload = {
+#             'iss': 'backend-api',
+#             'user_id': validated_data['user'].id,
+#             'username': validated_data['user'].username,
+#             'exp': datetime.utcnow() + timedelta(seconds=JWT_ACCESS_TTL),
+#             'type': 'access',
+#             'role': roles[0]
+#         }
+#         access = jwt.encode(payload=access_payload, key=JWT_SECRET)
+#
+#         refresh_payload = {
+#             'iss': 'backend-api',
+#             'user_id': validated_data['user'].id,
+#             'exp': datetime.utcnow() + timedelta(seconds=JWT_REFRESH_TTL),
+#             'type': 'refresh'
+#         }
+#         refresh = jwt.encode(payload=refresh_payload, key=JWT_SECRET)
+#
+#         return {
+#             'access': access,
+#             'refresh': refresh
+#         }
 
 
 # class RegisterSerializer(serializers.ModelSerializer):
