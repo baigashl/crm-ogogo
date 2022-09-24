@@ -149,7 +149,7 @@ class ListSubAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubAdmin
-        fields = ['id', 'username', 'name', 'second_name', 'branch']
+        fields = ['id', 'username', 'name', 'second_name', 'father_name', 'personal_phone', 'work_phone', 'branch']
 
     def get_url(self, obj):
         request = self.context.get('request')
