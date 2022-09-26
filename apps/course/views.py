@@ -16,6 +16,7 @@ from apps.administrator.permissions import IsSubAdminPermission
 from django.contrib.auth import get_user
 from ..students.serializers import StudentSerializer
 from django.core.paginator import Paginator
+from apps.mentor.models import Mentor
 
 
 class CourseListAPIView(APIView):
@@ -32,6 +33,7 @@ class CourseListAPIView(APIView):
             data = serializer.data
             serializer2 = StudentSerializer(Student.objects.filter(course_id=c.id), many=True)
             data['student_count'] = len(serializer2.data)
+            data['mentor'] = Mentor.objects.get(id=c.mentor_id).second_name
             data_list.append(data)
         data = data_list[page_num*10-10:page_num*10]
         count = {
