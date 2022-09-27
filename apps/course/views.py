@@ -149,7 +149,12 @@ class ArchiveCourseListAPIView(APIView):
             data['student_count'] = len(serializer2.data)
             data_list.append(data)
         data = data_list[page_num*10-10:page_num*10]
-        return Response(data)
+        count = {
+            "count": snippets.count(),
+            "response": data,
+            "all_data": data_list,
+        }
+        return Response(count)
 
 
 class CourseDeleteAPIView(APIView):
