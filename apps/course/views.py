@@ -31,7 +31,7 @@ class CourseListAPIView(APIView):
         for c in snippets:
             serializer = CourseSerializer(c)
             data = serializer.data
-            serializer2 = StudentSerializer(Student.objects.filter(course_id=c.id), many=True)
+            serializer2 = StudentSerializer(Student.objects.filter(course=c), many=True)
             data['student_count'] = len(serializer2.data)
             data['mentor'] = Mentor.objects.get(id=c.mentor_id).second_name
             data_list.append(data)

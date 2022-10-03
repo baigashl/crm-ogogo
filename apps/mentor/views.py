@@ -33,7 +33,7 @@ class MentorListAPIView(APIView):
             quan = 0
             for i in class_quan:
                 quan += i.quantity_of_classes
-            data['quantiy_of_classes'] = quan
+            data['quantiy_of_classes'] = class_quan
             data_list.append(data)
         return Response(data_list)
 

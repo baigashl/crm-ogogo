@@ -42,7 +42,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     #     return reverse("detail", kwargs={'id': obj.id}, request=request)
 
     def get_students(self, obj):
-        data = Student.objects.filter(course_id=obj.id)
+        data = Student.objects.filter(course=obj)
         return StudentSerializer(data, many=True).data
 
 
