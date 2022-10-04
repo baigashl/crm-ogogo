@@ -96,7 +96,6 @@ class StudentCreateAPIView(APIView):
     def post(self, request, format=None):
         serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
-            print('serializer valid')
             student = Student.objects.create(
                 # course=request.data['course'],
                 email=request.data['email'],
@@ -119,7 +118,6 @@ class StudentCreateAPIView(APIView):
                 quantity_of_classes=request.data['quantity_of_classes']
             )
             stud_class_quan.save()
-            print('student created')
             print('qrcode', student.qr_code)
             SendMail(student.qr_code.path, 'islambaigashkaev@gmail.com', student.email)
             serializer_output = StudentDetailSerializer(student)
@@ -218,10 +216,10 @@ class StudentSendMailAPIView(APIView):
         except Student.DoesNotExist:
             raise Http404
 
-    def delete(self, request, id, format=None):
+    def post(self, request, id, format=None):
         snippet = self.get_object(id)
-        snippet.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        SendMail(snippet.qr_code.path, 'islambaigashkaev@gmail.com', snippet.email)
+        return Response('send')
 
 
 
