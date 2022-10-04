@@ -3,8 +3,8 @@ from apps.course.models import Course
 
 
 class Student(models.Model):
-    course = models.ManyToManyField(Course, null=True, blank=True)
-    email = models.EmailField(max_length=255, unique=True, null=False)
+    course = models.ManyToManyField(Course, blank=True)
+    email = models.EmailField(max_length=255, unique=True , null=False)
     first_name = models.CharField(max_length=255, null=False)
     second_name = models.CharField(max_length=255, null=False)
     phone = models.CharField(max_length=50, null=True)
