@@ -145,10 +145,8 @@ class StudentDetailAPIView(APIView):
         snippet = self.get_object(id)
         snippet2 = StudentClassQuantity.objects.filter(student_id=id)
         courseid_list = [obj.course.id for obj in snippet2]
-        print(courseid_list)
         serializer = StudentSerializer(snippet, data=request.data)
         serializer2 = StudentClassQuantity()
-        print(request.data['course'])
         studclassquan = StudentClassQuantity.course
         if serializer.is_valid():
             serializer.save()

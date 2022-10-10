@@ -130,7 +130,6 @@ class CourseMoveToArchiveAPIView(APIView):
             student.save()
         snippet.active = False
         snippet.save()
-        print(snippet.active)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -183,10 +182,6 @@ class CourseTypeListAPIView(APIView):
     def get(self, request):
         snippets = CourseType.objects.all()
         serializer = CourseTypeSerializer(snippets, many=True)
-        print(request.user.groups.all())
-        print(request.user.groups.filter(name='SUBADMIN').exists())
-        print("user", request.user)
-        print(request.user)
         return Response(serializer.data)
 
     def post(self, request):

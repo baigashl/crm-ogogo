@@ -54,8 +54,6 @@ class CreateSubAdminView(APIView):
             )
             subadmin.save()
             my_admin_group = Group.objects.get_or_create(name='SUBADMIN')
-            print(my_admin_group)
-            print(my_admin_group[0])
             my_admin_group[0].user_set.add(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
