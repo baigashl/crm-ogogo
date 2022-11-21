@@ -93,7 +93,7 @@ class StudentCreateAPIView(APIView):
     permission_classes = [IsSubAdminPermission]
     # authentication_classes = []
 
-    def post(self, request, format=None):
+    async def post(self, request, format=None):
         serializer = StudentSerializer(data=request.data)
         if serializer.is_valid():
             student = Student.objects.create(

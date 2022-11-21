@@ -28,6 +28,7 @@ class CountSerializer(serializers.ModelSerializer):
         model = Course
         fields = ['count']
 
+
 class CourseDetailSerializer(serializers.ModelSerializer):
     mentor = MentorSerializer(read_only=True)
     students = serializers.SerializerMethodField()

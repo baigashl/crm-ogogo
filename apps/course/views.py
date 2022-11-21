@@ -1,11 +1,6 @@
-from django.shortcuts import render
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
 from rest_framework.views import APIView
 from rest_framework import permissions
-from rest_framework_simplejwt import authentication
 from .models import Course, CourseType
-from apps.students.models import Student
 from .serializers import CourseSerializer, CourseDetailSerializer, CourseTypeSerializer, CountSerializer
 from rest_framework.response import Response
 from rest_framework import status

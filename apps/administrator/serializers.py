@@ -1,5 +1,3 @@
-from datetime import timedelta, datetime
-import jwt
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.reverse import reverse
 from rest_framework import serializers
@@ -150,6 +148,7 @@ class ListSubAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubAdmin
         fields = ['id', 'username', 'name', 'second_name', 'father_name', 'personal_phone', 'work_phone', 'branch']
+
 
     def get_url(self, obj):
         request = self.context.get('request')
